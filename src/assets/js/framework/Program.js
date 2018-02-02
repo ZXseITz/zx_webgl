@@ -37,7 +37,7 @@ function Program(gl, shaders) {
     };
 
     shaders.forEach(s => {
-        const hShader = loadShader(s.path, s.type);
+        const hShader = loadShader(`./shaders/${s.file}`, s.type);
         gl.attachShader(hProgram, hShader);
     });
 
