@@ -5,9 +5,19 @@
  */
 
 function SceneGraph(program, transformName = "M") {
+    /**
+     * Node list
+     * @type {Object[]} nodes - node list
+     * @type {Mat4} nodes.mat - node transformation matrix
+     * @type {Mat4} [nodes.mesh] - node mesh
+     * @type {Object[]} nodes.children - sub nodes
+     */
     const nodes = [];
     Object.defineProperty(this, 'nodes', {value: nodes, writable: false});
 
+    /**
+     * Renders the scene graph
+     */
     this.render = () => {
         const mat = Mat4.ID;
         nodes.forEach(n => {
@@ -15,13 +25,21 @@ function SceneGraph(program, transformName = "M") {
         })
     };
 
+    /**
+     * Recursive function to render nodes
+     * @param {Object} node - node
+     * @param {Mat4} node.mat - node transition
+     * @param {Mesh} [node.mesh] - mesh
+     * @param {Mat4} [node.children] - sub nodes
+     * @param {Mat4} mat - previous transformation matrix
+     */
     let renderNode = (node, mat) => {
-        const transform = node.mat * mat; //transformation order
+        const transform = node.mat.multiplyMat4(mat); //transformation order
         if (node.hasOwnProperty('mesh') && node.mesh !== undefined) {
             program.writeMat4(transformName, transform);
             node.mesh.render();
         }
-        if (node.hasOwnProperty('children') && node.children !== undefined) {
+        if (node.children.length > 0) {
             node.children.forEach(n => {
                 renderNode(n, transform);
             });
@@ -29,5 +47,10 @@ function SceneGraph(program, transformName = "M") {
     }
 }
 
+/**
+ * Create a new node
+ * @param {Mat4} mat - transformation matrix
+ * @param {Mesh} [mesh] - mesh
+ * @returns {{mat: Mat4, mesh: Mesh, children: Object}}
+ */
 SceneGraph.createNode = (mat, mesh) => ({mat: mat, mesh: mesh, children: []});
-SceneGraph.createLeaf = (mat, mesh) => ({mat: mat, mesh: mesh});
