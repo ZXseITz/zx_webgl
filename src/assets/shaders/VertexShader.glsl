@@ -1,15 +1,13 @@
-﻿#version 400 core
-
-in vec3 pos;
-in vec3 normal;
-in vec4 color; //rgba
+﻿attribute vec3 pos;
+attribute vec3 normal;
+attribute vec4 color; //rgba
 
 uniform mat4 P; //projection
 uniform mat4 M; //transformation
 
-out vec3 f_pos;
-out vec3 f_normal;
-out vec4 f_color;
+varying vec3 f_pos;
+varying vec3 f_normal;
+varying vec4 f_color;
 
 void main()
 {
