@@ -5,6 +5,60 @@
     <title>WebGL</title>
 </head>
 <body>
-Welcome
+<canvas id="canvas" width="800" height="800"></canvas>
+Press F12 to show logs
+<script type="application/javascript" src="assets/js/framework/InitWebGL.js"></script>
+<script type="application/javascript" src="assets/js/framework/Program.js"></script>
+<script type="application/javascript" src="assets/js/framework/math/Mat4.js"></script>
+<script type="application/javascript" src="assets/js/framework/math/Vec3.js"></script>
+<script type="application/javascript" src="assets/js/framework/math/Vec4.js"></script>
+<script type="application/javascript" src="assets/js/framework/meshes/Mesh.js"></script>
+<script type="application/javascript" src="assets/js/framework/meshes/MeshFactory.js"></script>
+<script type="application/javascript" src="assets/js/framework/scene/SceneGraph.js"></script>
+<script>
+    let gl, p, sg, proj, ambient, lightPosition;
+    let rot, node;
+    window.onload = () => {
+        const canvas = document.getElementById('canvas');
+        gl = initWebGL(canvas);
+        p = new Program(gl, [
+            {file: 'VertexShader.glsl', type: gl.VERTEX_SHADER},
+            {file: 'FragmentShader.glsl', type: gl.FRAGMENT_SHADER},
+        ], Program.TYPES.POS_NORMAL_COLOR);
+
+        let m = Mat4.createTranslate(0, 0, -8);
+        const axis = new Vec3(1, 1, 0);
+        rot = Mat4.createRotation(0.01, axis);
+        proj = Mat4.createPerspectiveProjection(-2, 2, -2, 2, 0.1, 50);
+        ambient = new Vec4(0.1, 0.1, 0.1, 1);
+        lightPosition = new Vec3(0, 0, 4);
+
+        const meshFactory = new MeshFactory(gl, p);
+        const mesh = meshFactory.CreateCube(2, 2, 2, {r: 1, g:0, b:0, a:1});
+
+        sg = new SceneGraph(p);
+        node = {mat: m, mesh: mesh, children: []};
+        sg.nodes.push(node);
+
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.enable(gl.DEPTH_TEST);
+        gl.clearColor(0.2, 0.2, 0.2, 1.0);  // background
+
+        render();
+    };
+    render = () => {
+        gl.clear( gl.COLOR_BUFFER_BIT || gl.DEPTH_BUFFER_BIT);
+        node.mat = rot.multiplyMat4(node.mat);
+
+        p.use();
+        p.writeMat4('P', proj);
+        //scene graph writes the transformation matrix
+        p.writeVec4('ambient', ambient);
+        p.writeVec3('lightPosition', lightPosition);
+
+        sg.render();
+        requestAnimationFrame(render);
+    }
+</script>
 </body>
 </html>
