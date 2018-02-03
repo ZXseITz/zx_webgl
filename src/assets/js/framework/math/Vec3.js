@@ -12,13 +12,6 @@ function Vec3(x, y, z) {
 
     this.length = () => Math.sqrt(x * x + y * y + z * z);
 
-    this.distance = (v) => {
-        const dx = v.x - x;
-        const dy = v.y - y;
-        const dz = v.z - z;
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
-    };
-
     this.add = (v) => new Vec3(x + v.x, y + v.y, z + v.z);
 
     this.subtract = (v) => new Vec3(x - v.x, y - v.y, z - v.z);

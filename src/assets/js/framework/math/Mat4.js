@@ -68,29 +68,32 @@ function Mat4(a11, a12, a13, a14, a21, a22, a23, a24, a31, a32, a33, a34, a41, a
     );
 
     this.multiplyMat4 = (M) => new Mat4(
-        a11 * M.a11 + a21 * M.a12 + a31 * M.a13 + a41 * M.a14,
-        a12 * M.a11 + a22 * M.a12 + a32 * M.a13 + a42 * M.a14,
-        a13 * M.a11 + a23 * M.a12 + a33 * M.a13 + a43 * M.a14,
-        a14 * M.a11 + a24 * M.a12 + a34 * M.a13 + a44 * M.a14,
-        a11 * M.a21 + a21 * M.a22 + a31 * M.a23 + a41 * M.a24,
-        a12 * M.a21 + a22 * M.a22 + a32 * M.a23 + a42 * M.a24,
-        a13 * M.a21 + a23 * M.a22 + a33 * M.a23 + a43 * M.a24,
-        a14 * M.a21 + a24 * M.a22 + a34 * M.a23 + a44 * M.a24,
-        a11 * M.a31 + a21 * M.a32 + a31 * M.a33 + a41 * M.a34,
-        a12 * M.a31 + a22 * M.a32 + a32 * M.a33 + a42 * M.a34,
-        a13 * M.a31 + a23 * M.a32 + a33 * M.a33 + a43 * M.a34,
-        a14 * M.a31 + a24 * M.a32 + a34 * M.a33 + a44 * M.a34,
-        a11 * M.a41 + a21 * M.a42 + a31 * M.a43 + a41 * M.a44,
-        a12 * M.a41 + a22 * M.a42 + a32 * M.a43 + a42 * M.a44,
-        a13 * M.a41 + a23 * M.a42 + a33 * M.a43 + a43 * M.a44,
-        a14 * M.a41 + a24 * M.a42 + a34 * M.a43 + a44 * M.a44
+        a11 * M.a11 + a12 * M.a21 + a13 * M.a31 + a14 * M.a41,
+        a11 * M.a12 + a12 * M.a22 + a13 * M.a32 + a14 * M.a42,
+        a11 * M.a13 + a12 * M.a23 + a13 * M.a33 + a14 * M.a43,
+        a11 * M.a14 + a12 * M.a24 + a13 * M.a34 + a14 * M.a44,
+
+        a21 * M.a11 + a22 * M.a21 + a23 * M.a31 + a24 * M.a41,
+        a21 * M.a12 + a22 * M.a22 + a23 * M.a32 + a24 * M.a42,
+        a21 * M.a13 + a22 * M.a23 + a23 * M.a33 + a24 * M.a43,
+        a21 * M.a14 + a22 * M.a24 + a23 * M.a34 + a24 * M.a44,
+
+        a31 * M.a11 + a32 * M.a21 + a33 * M.a31 + a34 * M.a41,
+        a31 * M.a12 + a32 * M.a22 + a33 * M.a32 + a34 * M.a42,
+        a31 * M.a13 + a32 * M.a23 + a33 * M.a33 + a34 * M.a43,
+        a31 * M.a14 + a32 * M.a24 + a33 * M.a34 + a34 * M.a44,
+
+        a41 * M.a11 + a42 * M.a21 + a43 * M.a31 + a44 * M.a41,
+        a41 * M.a12 + a42 * M.a22 + a43 * M.a32 + a44 * M.a42,
+        a41 * M.a13 + a42 * M.a23 + a43 * M.a33 + a44 * M.a43,
+        a41 * M.a14 + a42 * M.a24 + a43 * M.a34 + a44 * M.a44,
     );
 
     this.multiplyVec4 = (v) => new Vec4(
-        a11 * v.x + a21 * v.y + a31 * v.z + a41 * v.w,
-        a12 * v.x + a22 * v.y + a32 * v.z + a42 * v.w,
-        a13 * v.x + a23 * v.y + a33 * v.z + a43 * v.w,
-        a14 * v.x + a24 * v.y + a34 * v.z + a44 * v.w
+        a11 * v.x + a12 * v.y + a13 * v.z + a14 * v.w,
+        a21 * v.x + a22 * v.y + a23 * v.z + a24 * v.w,
+        a31 * v.x + a32 * v.y + a33 * v.z + a34 * v.w,
+        a41 * v.x + a42 * v.y + a43 * v.z + a44 * v.w,
     );
 
     this.transpose = () => new Mat4(
@@ -141,7 +144,7 @@ function Mat4(a11, a12, a13, a14, a21, a22, a23, a24, a31, a32, a33, a34, a41, a
         a31, a32, a33, a34,
         a41, a42, a43, a44];
 
-    this.toString = () => `[${a11}, ${a12}, ${a13}, ${a14}\n ${a21}, ${a22}, ${a23}, ${a24}\n ${a31}, ${a32}, ${a33}, ${a34}\n ${a41}, ${a42}, ${a43}, ${a44}`;
+    this.toString = () => `[${a11}, ${a12}, ${a13}, ${a14}\n ${a21}, ${a22}, ${a23}, ${a24}\n ${a31}, ${a32}, ${a33}, ${a34}\n ${a41}, ${a42}, ${a43}, ${a44}]`;
 }
 
 Mat4.ZERO = new Mat4(
