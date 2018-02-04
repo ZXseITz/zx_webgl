@@ -26,7 +26,8 @@ Press F12 to show logs
             {file: 'FragmentShaderSimple.glsl', type: gl.FRAGMENT_SHADER},
         ], Program.TYPES.POS_COLOR);
 
-        let m = Mat4.createTranslation(0, 0, 0);
+        let m = Mat4.createTranslation(0.5, 0, 0);
+        m = Mat4.createRotationZ(0.1).multiplyMat4(m);
         const axis = new Vec3(1, 1, 0);
         rot = Mat4.createRotation(0.01, axis);
         proj = Mat4.createOrthogonalProjection(-2, 2, -2, 2, 0.1, 50);

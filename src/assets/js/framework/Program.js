@@ -81,8 +81,10 @@ function Program(gl, shaders, type) {
      * Sets an uniform shader mat4
      * @param {string} name - variable name
      * @param {Mat4} mat - variable value
+     * @param {boolean} [transposed] - transpose matrix used for transformation matrices
      */
-    this.writeMat4 = (name, mat) => gl.uniformMatrix4fv(getLocation(name), false, mat.toArray());
+    this.writeMat4 = (name, mat, transposed = false) => gl.uniformMatrix4fv(getLocation(name), false,
+        transposed ? mat.toTransposedArray() : mat.toArray());
 }
 
 Program.ATTR = {
