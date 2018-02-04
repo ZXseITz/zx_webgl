@@ -226,7 +226,7 @@ Mat4.ONE = new Mat4(
  * @param {number} z - translation in z direction
  * @returns {Mat4}
  */
-Mat4.createTranslate = (x, y, z) => new Mat4(
+Mat4.createTranslation = (x, y, z) => new Mat4(
     1, 0, 0, x,
     0, 1, 0, y,
     0, 0, 1, z,
@@ -253,13 +253,13 @@ Mat4.createRotation = (phi, axis) => {
     const zs = z * s;
 
     const a11 = x * x * ic + c;
-    const a12 = xy * ic + zs;
-    const a13 = xz * ic - ys;
-    const a21 = xy * ic - zs;
+    const a12 = xy * ic - zs;
+    const a13 = xz * ic + ys;
+    const a21 = xy * ic + zs;
     const a22 = y * y * ic + c;
-    const a23 = yz * ic + xs;
-    const a31 = xz * ic + ys;
-    const a32 = yz * ic - xs;
+    const a23 = yz * ic - xs;
+    const a31 = xz * ic - ys;
+    const a32 = yz * ic + xs;
     const a33 = z * z * ic + c;
 
     return new Mat4(
@@ -355,17 +355,17 @@ Mat4.createOrthogonalProjection = (left, right, bottom, top, near, far) => {
     const drl = 1 / (right - left);
     const dtb = 1 / (top - bottom);
     const dfn = 1 / (far - near);
-    const a41 = -(right + left) * drl;
-    const a42 = -(top + bottom) * dtb;
-    const a43 = -(far + near) * dfn;
     const a11 = 2 * drl;
     const a22 = 2 * dtb;
     const a33 = -2 * dfn;
+    const a14 = -(right + left) * drl;
+    const a24 = -(top + bottom) * dtb;
+    const a34 = -(far + near) * dfn;
     return new Mat4(
-        a11, 0, 0, 0,
-        0, a22, 0, 0,
-        0, 0, a33, 0,
-        a41, a42, a43, 1);
+        a11, 0, 0, a14,
+        0, a22, 0, a24,
+        0, 0, a33, a34,
+        0, 0, 0, 1);
 };
 /**
  * Creates a perspective projection matrix
@@ -383,13 +383,13 @@ Mat4.createPerspectiveProjection = (left, right, bottom, top, near, far) => {
     const dfn = 1 / (far - near);
     const a11 = drl * 2 * near;
     const a22 = dtb * 2 * near;
-    const a31 = drl * (right + left);
-    const a32 = dtb * (top + bottom);
+    const a13 = drl * (right + left);
+    const a23 = dtb * (top + bottom);
     const a33 = -(far + near) * dfn;
-    const a43 = -2 * far * near * dfn;
+    const a34 = -2 * far * near * dfn;
     return new Mat4(
-        a11, 0, 0, 0,
-        0, a22, 0, 0,
-        a31, a32, a33, -1,
-        0, 0, a43, 0);
+        a11, 0, a13, 0,
+        0, a22, a23, 0,
+        0, 0, a33, a34,
+        0, 0, -1, 0);
 };

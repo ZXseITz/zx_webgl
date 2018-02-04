@@ -11,10 +11,10 @@
  * @constructor
  */
 function MeshFactory(gl, program) {
-    let createVertexPosColor = (pos, color) => [pos.x, pos.y, pos.z, color.r, color.g, color.b];
-    let createVertexPosColorUV = (pos, normal, color, uv) => [pos.x, pos.y, pos.z, color.r, color.g, color.b, uv.u, uv.v];
-    let createVertexPosNormalColor = (pos, normal, color) => [pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, color.r, color.g, color.b];
-    let createVertexPosNormalColorUV = (pos, normal, color, uv) => [pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, color.r, color.g, color.b, uv.u, uv.v];
+    let createVertexPosColor = (pos, color) => [pos.x, pos.y, pos.z, color.r, color.g, color.b, color.a];
+    let createVertexPosColorUV = (pos, normal, color, uv) => [pos.x, pos.y, pos.z, color.r, color.g, color.b, color.a, uv.u, uv.v];
+    let createVertexPosNormalColor = (pos, normal, color) => [pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, color.r, color.g, color.b, color.a];
+    let createVertexPosNormalColorUV = (pos, normal, color, uv) => [pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, color.r, color.g, color.b, color.a, uv.u, uv.v];
 
     /**
      * Creates a centered cube based on program's settings
@@ -37,12 +37,12 @@ function MeshFactory(gl, program) {
         const pos = [
             {x: -x2, y: -y2, z: z2},
             {x: x2, y: -y2, z: z2},
-            {x: x2, y: y2, z: -z2},
+            {x: x2, y: -y2, z: -z2},
             {x: -x2, y: -y2, z: -z2},
             {x: -x2, y: y2, z: z2},
             {x: x2, y: y2, z: z2},
             {x: x2, y: y2, z: -z2},
-            {x: -x2, y: y2, z: -z}
+            {x: -x2, y: y2, z: -z2}
         ];
         const normals = [
             {x: 1, y: 0, z: 0},
