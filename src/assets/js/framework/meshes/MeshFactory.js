@@ -29,7 +29,7 @@ function MeshFactory(gl, program) {
      * @returns {Mesh} cube
      * @constructor
      */
-    this.CreateCube = (x, y, z, color) => {
+    this.createCube = (x, y, z, color) => {
         const x2 = x * 0.5;
         const y2 = y * 0.5;
         const z2 = z * 0.5;
