@@ -5,14 +5,18 @@
 /**
  * Program class
  * @param {WebGLRenderingContext} gl - WebGL object
- * @param {{file: string, type: number}[]} shaders - shader meta array, defining vertex and fragment shader
- * @param {{h: number, attr: {name: string, size: number}[]}} type - defines used shader in variables
+ * @param {Object[]} shaders - shader meta array, defining vertex and fragment shader
+ * @param {string} shaders[].file - shader source file
+ * @param {number} shaders[].type - shader type
+ * @param {Object[]} [types] - defines used shader in variables
+ * @param {string} types[].name - shader variable name
+ * @param {number} types[].size - shader variable size
  * @constructor
  */
-function Program(gl, shaders, type) {
+function Program(gl, shaders, types) {
     const hProgram = gl.createProgram();
     Object.defineProperty(this, 'hProgram', {value: hProgram, writable: false});
-    Object.defineProperty(this, 'type', {value: type, writable: false});
+    Object.defineProperty(this, 'types', {value: types, writable: false});
 
     let loadShader = (path, type) => {
         let source;
@@ -88,13 +92,13 @@ function Program(gl, shaders, type) {
 Program.ATTR = {
     POS: {name: 'pos', size: 3},
     NORMAL: {name: 'normal', size: 3},
-    COLOR: {name: 'color', size: 4},
+    COLOR: {name: 'color', size: 4}, //rgba format
     UV: {name: 'uv', size: 2}
 };
 
-Program.TYPES = {
-    POS_COLOR: {h: 10, attr: [Program.ATTR.POS, Program.ATTR.COLOR]},
-    POS_COLOR_UV: {h: 15, attr: [Program.ATTR.POS, Program.ATTR.COLOR, Program.ATTR.UV]},
-    POS_NORMAL_COLOR: {h: 20, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR]},
-    POS_NORMAL_COLOR_UV: {h: 25, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR, Program.ATTR.UV]},
-};
+// Program.TYPES = {
+//     POS_COLOR: [Program.ATTR.POS, Program.ATTR.COLOR],
+//     POS_COLOR_UV: [Program.ATTR.POS, Program.ATTR.COLOR, Program.ATTR.UV],
+//     POS_NORMAL_COLOR: {h: 20, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR]},
+//     POS_NORMAL_COLOR_UV: {h: 25, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR, Program.ATTR.UV]},
+// };

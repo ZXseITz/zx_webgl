@@ -24,9 +24,9 @@ Press F12 to show logs
         p = new Program(gl, [
             {file: 'VertexShader.glsl', type: gl.VERTEX_SHADER},
             {file: 'FragmentShader.glsl', type: gl.FRAGMENT_SHADER},
-        ], Program.TYPES.POS_NORMAL_COLOR);
+        ], [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR]);
 
-        let m = Mat4.createTranslation(0, 0, -4);
+        let m = Mat4.createTranslation(0, 0, -10);
         const axis = new Vec3(1, 0.8, -0.1);
         rot = Mat4.createRotation(0.01, axis);
         proj = Mat4.createOrthogonalProjection(-2, 2, -2, 2, 0.1, 50);
@@ -45,6 +45,7 @@ Press F12 to show logs
 
         render();
     };
+
     render = () => {
         gl.clear( gl.COLOR_BUFFER_BIT || gl.DEPTH_BUFFER_BIT);
         node.mat = node.mat.multiplyMat4(rot);

@@ -24,15 +24,15 @@ Press F12 to show logs
         p = new Program(gl, [
             {file: 'VertexShaderSimple.glsl', type: gl.VERTEX_SHADER},
             {file: 'FragmentShaderSimple.glsl', type: gl.FRAGMENT_SHADER},
-        ], Program.TYPES.POS_COLOR);
+        ]);
 
         let m = Mat4.createTranslation(0.2, 0, -1);
         m = m.multiplyMat4(Mat4.createRotationZ(0.2));
         proj = Mat4.createOrthogonalProjection(-2, 2, -2, 2, 0.1, 50);
 
         sg = new SceneGraph(p);
-        const mesh = new Mesh(gl, p.hProgram, p.type.attr);
-        mesh.addAllArrays([
+        const mesh = new Mesh(gl, p.hProgram);
+        mesh.addAll([Program.ATTR.POS, Program.ATTR.COLOR], [
             [-1, -1, 0, 1, 0, 0, 1],
             [1, -1, 0, 0, 1, 0, 1],
             [1, 1, 0, 0, 0, 1, 1],

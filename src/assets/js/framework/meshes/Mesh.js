@@ -11,60 +11,52 @@
  * @param {{name: string, size: number}[]} types - array of shader attributes
  * @constructor
  */
-function Mesh(gl, hProgram, types) {
-    let hBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, hBuffer);
+function Mesh(gl, hProgram) {
+    let hBuffer = undefined;
     let buf = null;
     let _mode;
     let _size;
 
-    const l = types.length - 1;
-    const pointers = [0];
-    for (let i = 0; i < l; i++) {
-        pointers.push(types[i].size * 4 + pointers[i]);
-    }
-    const vertexSize = pointers[l] + types[l].size * 4;
-    const vertexFloats = vertexSize * 0.25;
-    for (let i = 0; i < types.length; i++) {
-        const attr = types[i];
-        const h = gl.getAttribLocation(hProgram, attr.name);
-        gl.enableVertexAttribArray(h);
-        gl.vertexAttribPointer(h, attr.size, gl.FLOAT, false, vertexSize, pointers[i]);
-    }
+    let createBuffer = (attributes, stride) => {
+        const hBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, hBuffer);
 
-    /**
-     * Adds all vertices
-     * @param {*[]} vertices - vertex array
-     * @param {number} mode - how to interpret vertices
-     */
-    this.addAllVertices = (vertices, mode) => {
-        _mode = mode;
-        _size = vertices.length;
-        hBuffer = gl.createBuffer();
-        buf = new Float32Array(_size * vertexFloats);
-        for (let i = 0; i < _size; i++) {
-            const vertex = vertices[i];
-            const a = [];
-            for (let key in vertex) {
-                if (vertex.hasOwnProperty(key)){
-                    vertex[key].forEach(value => a.push(value))
-                }
-            }
-            buf.set(a, i * vertexFloats);
-        }
+        attributes.forEach(attr => {
+            const h = gl.getAttribLocation(hProgram, attr.name);
+            gl.enableVertexAttribArray(h);
+            gl.vertexAttribPointer(h, attr.size, gl.FLOAT, false, stride, attr.pointer);
+        });
+        return hBuffer;
     };
 
     /**
-     * Adds all vertices as arrays
-     * @param {[][]} arrays - data array
-     * @param {number} mode - how to interpret vertices
+     *
+     * @param {Object[]} types - shader types
+     * @param {string} types[].name - shader type name
+     * @param {number} types[].size - shader type size
+     * @param {number[][]} vertices - vertex array
+     * @param mode - how to interpret the vertices
      */
-    this.addAllArrays = (arrays, mode) => {
+    this.addAll = (types, vertices, mode) => {
         _mode = mode;
-        _size = arrays.length;
-        buf = new Float32Array(_size * vertexFloats);
+        _size = vertices.length;
+        let pointer = 0;
+        let vFloats = 0;
+
+        //create buffer
+        const attributes = [];
+        types.forEach(type => {
+            const s = type.size;
+            attributes.push({name: type.name, size: s, pointer: pointer});
+            pointer += s * 4;
+            vFloats += s;
+        });
+        hBuffer = createBuffer(attributes, pointer);
+
+        //set data
+        buf = new Float32Array(_size * vFloats);
         for (let i = 0; i < _size; i++) {
-            buf.set(arrays[i], i * vertexFloats);
+            buf.set(vertices[i], i * vFloats);
         }
     };
 
@@ -72,7 +64,7 @@ function Mesh(gl, hProgram, types) {
      * Draws the mesh
      */
     this.render = () => {
-        if (buf === null) throw new Error('No vertices are defined in this mesh');
+        if (hBuffer === undefined) throw new Error('No vertices are defined in this mesh');
         gl.bindBuffer(gl.ARRAY_BUFFER, hBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, buf, gl.STATIC_DRAW);
         gl.drawArrays(_mode, 0, _size);
