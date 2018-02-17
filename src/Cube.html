@@ -13,7 +13,7 @@ Press F12 to show logs
 <script type="application/javascript" src="assets/js/framework/math/Vec3.js"></script>
 <script type="application/javascript" src="assets/js/framework/math/Vec4.js"></script>
 <script type="application/javascript" src="assets/js/framework/meshes/Mesh.js"></script>
-<script type="application/javascript" src="assets/js/framework/meshes/MeshFactory.js"></script>
+<script type="application/javascript" src="assets/js/framework/meshes/geometries/CubeFactory.js"></script>
 <script type="application/javascript" src="assets/js/framework/scene/SceneGraph.js"></script>
 <script>
     let gl, p, sg, proj, ambient, lightsPos;
@@ -34,8 +34,8 @@ Press F12 to show logs
         lightsPos = new Vec3(0, 0, 5);
 
         sg = new SceneGraph(p);
-        const meshFac = new MeshFactory(gl, p);
-        const mesh = meshFac.createCube(2, 2, 2, {r: 1, g: 0, b: 0, a: 1});
+        const cubeFac = new CubeFactory(gl, 2, 2, 2, {r: 1, g: 0, b: 0, a: 1}, {r: 1, g: 1, b: 1, a: 1});
+        const mesh = cubeFac.createShape(p);
         node = {mat: m, mesh: mesh, children: []};
         sg.nodes.push(node);
 

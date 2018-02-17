@@ -17,6 +17,8 @@ function Program(gl, shaders, types) {
     const hProgram = gl.createProgram();
     Object.defineProperty(this, 'hProgram', {value: hProgram, writable: false});
     Object.defineProperty(this, 'types', {value: types, writable: false});
+    Object.defineProperty(this, 'useShapeFactory', {value: Program.defineShapeAttr(types), writable: false});
+    Object.defineProperty(this, 'useFrameFactory', {value: Program.defineFrameAttr(types), writable: false});
 
     let loadShader = (path, type) => {
         let source;
@@ -89,16 +91,61 @@ function Program(gl, shaders, types) {
     this.writeMat4 = (name, mat) => gl.uniformMatrix4fv(getLocation(name), false, mat.toTransposedArray()); //writes mat4 transposed for correct gl
 }
 
+Program.defineShapeAttr = (types) => {
+    for (let i = 0; i < types.length; i++) {
+        const type = types[i];
+        switch (type.name) {
+            case 'pos':
+                if (type.size !== 3) {
+                    return false;
+                }
+                break;
+            case 'normal':
+                if (type.size !== 3) {
+                    return false;
+                }
+                break;
+            case 'color':
+                if (type.size !== 4) {
+                    return false;
+                }
+                break;
+            case 'uv':
+                if (type.size !== 2) {
+                    return false;
+                }
+                break;
+            default:
+                return false;
+        }
+    }
+    return true;
+};
+
+Program.defineFrameAttr = (types) => {
+    for (let i = 0; i < types.length; i++) {
+        const type = types[i];
+        switch (type.name) {
+            case 'pos':
+                if (type.size !== 3) {
+                    return false;
+                }
+                break;
+            case 'color':
+                if (type.size !== 4) {
+                    return false;
+                }
+                break;
+            default:
+                return false;
+        }
+    }
+    return true;
+};
+
 Program.ATTR = {
     POS: {name: 'pos', size: 3},
     NORMAL: {name: 'normal', size: 3},
     COLOR: {name: 'color', size: 4}, //rgba format
     UV: {name: 'uv', size: 2}
 };
-
-// Program.TYPES = {
-//     POS_COLOR: [Program.ATTR.POS, Program.ATTR.COLOR],
-//     POS_COLOR_UV: [Program.ATTR.POS, Program.ATTR.COLOR, Program.ATTR.UV],
-//     POS_NORMAL_COLOR: {h: 20, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR]},
-//     POS_NORMAL_COLOR_UV: {h: 25, attr: [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR, Program.ATTR.UV]},
-// };
