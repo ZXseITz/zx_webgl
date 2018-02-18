@@ -13,7 +13,7 @@ void main()
 {
   vec4 p4 =  M * vec4(pos, 1);
   f_pos = p4.xyz;
-  f_normal = (M * vec4(normal, 0)).xyz;
+  f_normal = (M * vec4(normalize(normal), 0)).xyz;
   f_color = color;
 
   gl_Position = P * p4;

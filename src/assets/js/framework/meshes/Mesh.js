@@ -51,10 +51,10 @@ function Mesh(gl, hProgram) {
             pointer += s * 4;
             vFloats += s;
         });
+        buf = new Float32Array(_size * vFloats);
         hBuffer = createBuffer(attributes, pointer);
 
         //set data
-        buf = new Float32Array(_size * vFloats);
         for (let i = 0; i < _size; i++) {
             buf.set(vertices[i], i * vFloats);
         }

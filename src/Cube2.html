@@ -25,10 +25,6 @@ Press F12 to show logs
             {file: 'VertexShader.glsl', type: gl.VERTEX_SHADER},
             {file: 'FragmentShader.glsl', type: gl.FRAGMENT_SHADER},
         ], [Program.ATTR.POS, Program.ATTR.NORMAL, Program.ATTR.COLOR]);
-        p2 = new Program(gl, [
-            {file: 'VertexShaderFrame.glsl', type: gl.VERTEX_SHADER},
-            {file: 'FragmentShaderFrame.glsl', type: gl.FRAGMENT_SHADER},
-        ], [Program.ATTR.POS, Program.ATTR.COLOR]);
 
         let m = Mat4.createTranslation(0, 0, -10);
         const axis = new Vec3(1, 0.8, -0.1);
@@ -40,13 +36,10 @@ Press F12 to show logs
 
         sg = new SceneGraph(p);
         const mesh = cubeFac.createShape(p);
-        node = {mat: m, mesh: mesh, children: []};
+        node = {mat: m, mesh: mesh, children: [
+                {mat: Mat4.createTranslation(-1, 2.5, 1), mesh: mesh, children: []},
+            ]};
         sg.nodes.push(node);
-
-        sg2 = new SceneGraph(p2);
-        const mesh2 = cubeFac.createFrame(p2);
-        node2 = {mat: m, mesh: mesh2, children: []};
-        sg2.nodes.push(node2);
 
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.enable(gl.DEPTH_TEST);
@@ -59,7 +52,6 @@ Press F12 to show logs
     render = () => {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         node.mat = node.mat.multiplyMat4(rot);
-        node2.mat = node2.mat.multiplyMat4(rot);
 
         p.use();
         p.writeMat4('P', proj);
@@ -67,11 +59,6 @@ Press F12 to show logs
         p.writeVec3('lightPosition', lightsPos);
         //scene graph writes the transformation matrix
         sg.render();
-
-        p2.use();
-        p2.writeMat4('P', proj);
-        //scene graph writes the transformation matrix
-        sg2.render();
 
         requestAnimationFrame(render);
     }

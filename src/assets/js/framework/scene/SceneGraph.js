@@ -33,7 +33,7 @@ function SceneGraph(program, transformName = "M") {
      * @param {Mat4} mat - previous transformation matrix
      */
     let renderNode = (node, mat) => {
-        const transform = node.mat.multiplyMat4(mat); //transformation order
+        const transform = mat.multiplyMat4(node.mat); //transformation order
         if (node.hasOwnProperty('mesh') && node.mesh !== undefined) {
             program.writeMat4(transformName, transform); //write matrix transposed
             node.mesh.render();
