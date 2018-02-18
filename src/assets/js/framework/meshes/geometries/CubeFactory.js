@@ -45,7 +45,7 @@ function CubeFactory(gl, x, y, z, colorShape, colorFrame) {
         return mesh;
     };
 
-    this.createGrid = (program) => {
+    this.createFrame = (program) => {
         if (!program.useFrameFactory) throw new Error(`Program ${program.hProgram} doesn't support FrameFactories`);
         const mesh = new Mesh(gl, program.hProgram);
 

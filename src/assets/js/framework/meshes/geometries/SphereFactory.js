@@ -1,59 +1,102 @@
-// /**
-//  * Created by Claudio on 27.03.2017.
-//  */
-//
-// function RotBall(gl, p, radius, n1, n2) {
-//     const a = 2 * Math.PI / n1;
-//     const e = Math.PI / n2;
-//     const points = [];
-//     for (let i = 0; i < n1; i++) {
-//         const ic = Math.cos(i * a);
-//         const is = Math.sin(i * a);
-//         points.push([]);
-//         for (let j = 0; j <= n2; j++) {
-//             points[i].push([]);
-//
-//             const xz = radius * Math.sin(j * e);
-//
-//             points[i][j].push(xz * ic);                    //x
-//             points[i][j].push(radius * Math.cos(j * e));  //y
-//             points[i][j].push(xz * is);                    //z
-//
-//             points[i][j].push(points[i][j][0]);                         //nx
-//             points[i][j].push(points[i][j][1]);                         //ny
-//             points[i][j].push(points[i][j][2]);                         //nz
-//         }
-//     }
-//
-//     this.drawArea = function () {
-//         for (var i = 0; i < n1; i++) {
-//             for (var j = 0; j <= n2; j++) {
-//                 vBuf.setNormal(points[i][j][3], points[i][j][4], points[i][j][5]);
-//                 vBuf.putVertex(points[i][j][0], points[i][j][1], points[i][j][2]);
-//                 var i2 = (i + 1) % n1;
-//                 vBuf.setNormal(points[i2][j][3], points[i2][j][4], points[i2][j][5]);
-//                 vBuf.putVertex(points[i2][j][0], points[i2][j][1], points[i2][j][2]);
-//             }
-//             vBuf.drawArray(gl.TRIANGLE_STRIP);
-//         }
-//     };
-//
-//     this.drawGrid = function () {
-//         // n1 altitudes
-//         for (var i = 0; i < n1; i++) {
-//             for (var j = 0; j <= n2; j++) {
-//                 vBuf.setNormal(points[i][j][3], points[i][j][4], points[i][j][5]);
-//                 vBuf.putVertex(points[i][j][0], points[i][j][1], points[i][j][2]);
-//             }
-//             vBuf.drawArray(gl.LINE_STRIP);
-//         }
-//         // n2 longitudes
-//         for (j = 1; j < n2; j++) {
-//             for (i = 0; i < n1; i++) {
-//                 vBuf.setNormal(points[i][j][3], points[i][j][4], points[i][j][5]);
-//                 vBuf.putVertex(points[i][j][0], points[i][j][1], points[i][j][2]);
-//             }
-//             vBuf.drawArray(gl.LINE_LOOP);
-//         }
-//     };
-// }
+/**
+ * Created by Claudio on 27.03.2017.
+ */
+
+function SphereFactory(gl, radius, n1, n2, colorShape, colorFrame) {
+    const d1 = 1 / n1;
+    const d2 = 1 / n2;
+    const a = 2 * Math.PI * d1;
+    const e = Math.PI * d2;
+    const data = {};
+    data.pos = [];
+    data.normals = [];
+    data.color = [
+        [colorShape.r, colorShape.g, colorShape.b, colorShape.a],
+        [colorFrame.r, colorFrame.g, colorFrame.b, colorFrame.a],
+    ];
+    data.uvs = [];
+    const shapeIndices = [];
+    const frameIndices = [];
+
+    for (let u = 0; u <= n1; u++) {
+        const a0 = u * n2;
+        const ic = -Math.cos(u * a);
+        const is = -Math.sin(u * a);
+        for (let v = 0; v <= n2; v++) {
+            const js = Math.sin(v * e);
+            const jc = Math.cos(v * e);
+            const xz = radius * js;
+            //vertices
+            data.pos.push([
+                xz * ic,
+                radius * jc,
+                xz * is
+            ]);
+            data.normals.push([
+                js * ic,
+                jc,
+                js * is,
+            ]);
+            data.uvs.push([
+                u * d1,
+                v * d2,
+            ]);
+
+            if (u === n1 || v === n2) continue;
+            const a = a0 + v;
+            const b = a + 1;
+            const c = b + n2;
+            //indices
+            shapeIndices.push(
+                {pos: a, normal: a, color: 0, uv: a},
+                {pos: b, normal: b, color: 0, uv: b},
+                {pos: c, normal: c, color: 0, uv: c},
+            );
+            frameIndices.push(
+                {pos: a, color: 1},
+                {pos: b, color: 1},
+            );
+            if (v === 0) continue;
+            frameIndices.push(
+                {pos: a, color: 1},
+                {pos: c, color: 1},
+            );
+        }
+    }
+
+    this.createShape = (program) => {
+        if (!program.useShapeFactory) throw new Error(`Program ${program.hProgram} doesn't support ShapeFactories`);
+        const mesh = new Mesh(gl, program.hProgram);
+
+        const vertices = [];
+        shapeIndices.forEach(index => {
+            let vertex = [];
+            program.types.forEach(attr => {
+                const name = attr.name;
+                vertex = vertex.concat(data[name][index[name]]);
+            });
+            vertices.push(vertex);
+        });
+
+        mesh.addAll(program.types, vertices, gl.TRIANGLES);
+        return mesh;
+    };
+
+    this.createFrame = (program) => {
+        if (!program.useFrameFactory) throw new Error(`Program ${program.hProgram} doesn't support FrameFactories`);
+        const mesh = new Mesh(gl, program.hProgram);
+
+        const vertices = [];
+        frameIndices.forEach(index => {
+            let vertex = [];
+            program.types.forEach(attr => {
+                const name = attr.name;
+                vertex = vertex.concat(data[name][index[name]]);
+            });
+            vertices.push(vertex);
+        });
+
+        mesh.addAll(program.types, vertices, gl.LINES);
+        return mesh;
+    }
+}
