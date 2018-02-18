@@ -22,8 +22,8 @@ Press F12 to show logs
         const canvas = document.getElementById('canvas');
         gl = initWebGL(canvas);
         p = new Program(gl, [
-            {file: 'VertexShaderSimple.glsl', type: gl.VERTEX_SHADER},
-            {file: 'FragmentShaderSimple.glsl', type: gl.FRAGMENT_SHADER},
+            {file: 'VertexShaderFrame.glsl', type: gl.VERTEX_SHADER},
+            {file: 'FragmentShaderFrame.glsl', type: gl.FRAGMENT_SHADER},
         ]);
 
         let m = Mat4.createTranslation(0.2, 0, -1);

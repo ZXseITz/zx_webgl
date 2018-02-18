@@ -92,6 +92,7 @@ function Program(gl, shaders, types) {
 }
 
 Program.defineShapeAttr = (types) => {
+    if (types === undefined) return false;
     for (let i = 0; i < types.length; i++) {
         const type = types[i];
         switch (type.name) {
@@ -123,6 +124,7 @@ Program.defineShapeAttr = (types) => {
 };
 
 Program.defineFrameAttr = (types) => {
+    if (types === undefined) return false;
     for (let i = 0; i < types.length; i++) {
         const type = types[i];
         switch (type.name) {
